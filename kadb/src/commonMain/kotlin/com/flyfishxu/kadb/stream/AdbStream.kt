@@ -15,26 +15,25 @@
  *
  */
 
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.stream
 
+import com.flyfishxu.kadb.core.AdbMessage
+import com.flyfishxu.kadb.core.AdbProtocol
+import com.flyfishxu.kadb.core.AdbWriter
+import com.flyfishxu.kadb.queue.AdbMessageQueue
 import okio.*
 import java.lang.Integer.min
 import java.nio.ByteBuffer
 
-interface AdbStream : AutoCloseable {
-    val source: BufferedSource
-    val sink: BufferedSink
-}
-
-internal class AdbStreamImpl internal constructor(
+class AdbStream internal constructor(
     private val messageQueue: AdbMessageQueue,
     private val adbWriter: AdbWriter,
     private val maxPayloadSize: Int,
     private val localId: Int,
     private val remoteId: Int
-) : AdbStream {
+) : AutoCloseable {
     private var isClosed = false
-    override val source = object : Source {
+    val source = object : Source {
         private var message: AdbMessage? = null
         private var bytesRead = 0
 
@@ -71,8 +70,7 @@ internal class AdbStreamImpl internal constructor(
         override fun timeout() = Timeout.NONE
     }.buffer()
 
-    override val sink = object : Sink {
-
+    val sink = object : Sink {
         private val buffer = ByteBuffer.allocate(maxPayloadSize)
 
         override fun write(source: Buffer, byteCount: Long) {

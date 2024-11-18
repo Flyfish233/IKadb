@@ -1,26 +1,11 @@
-/*
- * Copyright (c) 2021 mobile.dev inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+package com.flyfishxu.kadb.core
 
-package com.flyfishxu.kadb
-
-import com.flyfishxu.kadb.SslUtils.getSSLSocket
+import com.flyfishxu.kadb.cert.AdbKeyPair
 import com.flyfishxu.kadb.cert.loadKeyPair
 import com.flyfishxu.kadb.cert.platform.defaultDeviceName
 import com.flyfishxu.kadb.exception.AdbPairAuthException
+import com.flyfishxu.kadb.queue.AdbMessageQueue
+import com.flyfishxu.kadb.stream.AdbStream
 import okio.Sink
 import okio.Source
 import okio.sink
@@ -60,7 +45,7 @@ internal class AdbConnection internal constructor(
             val message = messageQueue.take(localId, AdbProtocol.CMD_OKAY)
             val remoteId = message.arg0
 
-            return AdbStreamImpl(messageQueue, adbWriter, maxPayloadSize, localId, remoteId)
+            return AdbStream(messageQueue, adbWriter, maxPayloadSize, localId, remoteId)
         } catch (e: Throwable) {
             messageQueue.stopListening(localId)
             throw e
@@ -90,7 +75,6 @@ internal class AdbConnection internal constructor(
     }
 
     companion object {
-
         fun connect(socket: Socket, keyPair: AdbKeyPair? = null): AdbConnection {
             val source = socket.source()
             val sink = socket.sink()
@@ -131,7 +115,7 @@ internal class AdbConnection internal constructor(
                 val host = socket.inetAddress.hostAddress!!
                 val port = socket.port
                 val newSocket = Socket(host, port)
-                val sslSocket = getSSLSocket(
+                val sslSocket = SslUtils.getSSLSocket(
                     newSocket, host, port, loadKeyPair()
                 )
                 adbReader.close()
@@ -174,6 +158,7 @@ internal class AdbConnection internal constructor(
         }
     }
 }
+
 
 /*** ADB RSA Public Key Transformation Section ***/
 private const val KEY_LENGTH_BITS = 2048

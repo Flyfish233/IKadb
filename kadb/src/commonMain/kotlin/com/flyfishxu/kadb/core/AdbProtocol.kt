@@ -13,8 +13,7 @@
  * limitations under the License.
  *
  */
-
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.core
 
 import java.nio.ByteBuffer
 import java.nio.ByteOrder

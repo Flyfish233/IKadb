@@ -15,7 +15,7 @@
  *
  */
 
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.debug
 
 private val ENABLED = "true" == System.getenv("KADB_LOGGING")
 

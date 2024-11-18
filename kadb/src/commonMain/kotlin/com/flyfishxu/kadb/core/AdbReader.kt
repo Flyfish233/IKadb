@@ -15,8 +15,9 @@
  *
  */
 
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.core
 
+import com.flyfishxu.kadb.debug.log
 import okio.Source
 import okio.buffer
 

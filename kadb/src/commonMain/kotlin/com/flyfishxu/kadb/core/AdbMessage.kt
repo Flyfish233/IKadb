@@ -15,8 +15,10 @@
  *
  */
 
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.core
 
+import com.flyfishxu.kadb.shell.ID_EXIT
+import com.flyfishxu.kadb.stream.SYNC_IDS
 import okio.Buffer
 import okio.BufferedSource
 import java.nio.charset.StandardCharsets

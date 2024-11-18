@@ -14,7 +14,7 @@
  * limitations under the License.
  *
  */
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.shell
 
 sealed class AdbShellPacket(
     open val payload: ByteArray

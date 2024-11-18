@@ -16,9 +16,9 @@
 
 package com.flyfishxu.kadb.pair
 
-import com.flyfishxu.kadb.AdbKeyPair
-import com.flyfishxu.kadb.SslUtils.getSslContext
+import com.flyfishxu.kadb.cert.AdbKeyPair
 import com.flyfishxu.kadb.cert.AndroidPubkey.encodeWithName
+import com.flyfishxu.kadb.core.SslUtils.getSslContext
 import java.io.Closeable
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -33,6 +33,9 @@ import javax.net.ssl.SSLException
 import javax.net.ssl.SSLServerSocket
 import javax.net.ssl.SSLSocket
 import kotlin.Throws
+
+private const val EXPORTED_KEY_LABEL = "adb-label\u0000"
+private const val EXPORT_KEY_SIZE = 64
 
 internal class PairingConnectionCtx(
     host: String, private val mPort: Int, pwd: ByteArray, keyPair: AdbKeyPair, deviceName: String
@@ -228,11 +231,11 @@ internal class PairingConnectionCtx(
         Arrays.fill(mPwd, 0.toByte())
         try {
             mInputStream!!.close()
-        } catch (ignore: IOException) {
+        } catch (_: IOException) {
         }
         try {
             mOutputStream!!.close()
-        } catch (ignore: IOException) {
+        } catch (_: IOException) {
         }
         if (mState != State.Ready) {
             mPairingAuthCtx!!.destroy()
@@ -310,11 +313,6 @@ internal class PairingConnectionCtx(
                 return PairingPacketHeader(version, type, payload)
             }
         }
-    }
-
-    companion object {
-        const val EXPORTED_KEY_LABEL = "adb-label\u0000"
-        const val EXPORT_KEY_SIZE = 64
     }
 }
 

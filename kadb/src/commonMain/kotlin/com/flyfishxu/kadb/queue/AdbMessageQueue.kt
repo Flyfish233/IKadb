@@ -15,7 +15,11 @@
  *
  */
 
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.queue
+
+import com.flyfishxu.kadb.core.AdbMessage
+import com.flyfishxu.kadb.core.AdbProtocol
+import com.flyfishxu.kadb.core.AdbReader
 
 internal class AdbMessageQueue(private val adbReader: AdbReader) : AutoCloseable,
     MessageQueue<AdbMessage>() {

@@ -6,9 +6,9 @@ import com.flyfishxu.kadb.cert.KadbCert
 @OptIn(ExperimentalStdlibApi::class)
 private suspend fun main() {
     val ip = "10.0.0.229"
-    val pairCode = "374027"
-    val pairPort = 43373
-    val connPort = 38857
+    val pairCode = "666026"
+    val pairPort = 43015
+    val connPort = 41737
 
     println("Pairing")
     Kadb.pair(ip, pairPort, pairCode)

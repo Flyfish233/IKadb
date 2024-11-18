@@ -15,7 +15,7 @@
  *
  */
 
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.stream
 
 import okio.Buffer
 import okio.Sink

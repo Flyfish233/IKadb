@@ -17,7 +17,7 @@
 package com.flyfishxu.kadb.forwarding
 
 import com.flyfishxu.kadb.Kadb
-import com.flyfishxu.kadb.log
+import com.flyfishxu.kadb.debug.log
 import okio.*
 import java.io.IOException
 import java.io.InterruptedIOException

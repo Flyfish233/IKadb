@@ -15,8 +15,9 @@
  *
  */
 
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.core
 
+import com.flyfishxu.kadb.debug.log
 import okio.Sink
 import okio.buffer
 import java.nio.ByteBuffer

@@ -1,8 +1,14 @@
 package com.flyfishxu.kadb
 
+import com.flyfishxu.kadb.cert.AdbKeyPair
 import com.flyfishxu.kadb.cert.loadKeyPair
 import com.flyfishxu.kadb.cert.platform.defaultDeviceName
+import com.flyfishxu.kadb.core.AdbConnection
 import com.flyfishxu.kadb.pair.PairingConnectionCtx
+import com.flyfishxu.kadb.shell.AdbShellResponse
+import com.flyfishxu.kadb.shell.AdbShellStream
+import com.flyfishxu.kadb.stream.AdbStream
+import com.flyfishxu.kadb.stream.AdbSyncStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.*

@@ -16,7 +16,7 @@
 
 package com.flyfishxu.kadb.cert
 
-import com.flyfishxu.kadb.pair.StringCompat
+import com.flyfishxu.kadb.pair.getBytes
 import okio.Buffer
 import org.jetbrains.annotations.VisibleForTesting
 import java.math.BigInteger
@@ -101,7 +101,7 @@ internal object AndroidPubkey {
     // Taken from get_user_info except that a custom name is used instead of host@user
     @VisibleForTesting
     fun getUserInfo(name: String): ByteArray {
-        return StringCompat.getBytes(String.format(" %s\u0000", name), "UTF-8")
+        return getBytes(String.format(" %s\u0000", name), "UTF-8")
     }
 
     /**

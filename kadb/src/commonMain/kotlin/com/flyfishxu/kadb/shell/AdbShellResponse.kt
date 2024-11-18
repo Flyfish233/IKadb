@@ -1,4 +1,4 @@
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.shell
 
 class AdbShellResponse(
     val output: String,

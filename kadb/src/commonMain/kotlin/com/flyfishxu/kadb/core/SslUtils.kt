@@ -14,8 +14,9 @@
  *
  */
 
-package com.flyfishxu.kadb
+package com.flyfishxu.kadb.core
 
+import com.flyfishxu.kadb.cert.AdbKeyPair
 import okio.BufferedSink
 import okio.buffer
 import okio.sink
@@ -25,7 +26,7 @@ import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.*
 
-object SslUtils {
+internal object SslUtils {
     var customConscrypt = false
     private var sslContext: SSLContext? = null
 

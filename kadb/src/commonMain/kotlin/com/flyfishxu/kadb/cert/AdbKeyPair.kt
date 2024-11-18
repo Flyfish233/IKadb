@@ -13,10 +13,9 @@
  * limitations under the License.
  *
  */
+package com.flyfishxu.kadb.cert
 
-package com.flyfishxu.kadb
-
-import com.flyfishxu.kadb.cert.AndroidPubkey.SIGNATURE_PADDING
+import com.flyfishxu.kadb.core.AdbMessage
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.security.cert.Certificate
@@ -28,7 +27,7 @@ class AdbKeyPair(
     internal fun signPayload(message: AdbMessage): ByteArray {
         val cipher = Cipher.getInstance("RSA/ECB/NoPadding")
         cipher.init(Cipher.ENCRYPT_MODE, privateKey)
-        cipher.update(SIGNATURE_PADDING)
+        cipher.update(AndroidPubkey.SIGNATURE_PADDING)
         return cipher.doFinal(message.payload, 0, message.payloadLength)
     }
 }
