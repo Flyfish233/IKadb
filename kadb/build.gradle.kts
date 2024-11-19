@@ -38,12 +38,16 @@ kotlin {
             dependencies {
                 implementation(libs.spake2.jvm)
                 implementation(libs.jmdns)
-                implementation(libs.conscrypt.java)
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(libs.kotlin.test)
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(libs.conscrypt.java)
             }
         }
     }

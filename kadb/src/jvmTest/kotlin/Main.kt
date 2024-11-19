@@ -1,5 +1,3 @@
-package com.flyfishxu.kadb.debug
-
 import com.flyfishxu.kadb.Kadb
 import com.flyfishxu.kadb.cert.KadbCert
 
