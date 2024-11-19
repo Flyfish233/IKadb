@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.*
 
 internal object SslUtils {
-    var customConscrypt = false
+    var customConscrypt = false // TODO: WTF is this?
     private var sslContext: SSLContext? = null
 
     fun getSSLSocket(

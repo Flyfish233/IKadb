@@ -2,6 +2,7 @@ package com.flyfishxu.kadb.pair
 
 import android.annotation.SuppressLint
 import android.os.Build
+import com.flyfishxu.kadb.core.SslUtils
 import org.lsposed.hiddenapibypass.HiddenApiBypass
 import java.security.NoSuchAlgorithmException
 
