@@ -4,6 +4,7 @@ import com.flyfishxu.kadb.cert.AdbKeyPair
 import com.flyfishxu.kadb.cert.loadKeyPair
 import com.flyfishxu.kadb.cert.platform.defaultDeviceName
 import com.flyfishxu.kadb.core.AdbConnection
+import com.flyfishxu.kadb.forwarding.TcpForwarder
 import com.flyfishxu.kadb.pair.PairingConnectionCtx
 import com.flyfishxu.kadb.shell.AdbShellResponse
 import com.flyfishxu.kadb.shell.AdbShellStream
@@ -16,6 +17,7 @@ import java.io.File
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
+import kotlin.Throws
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class Kadb(
@@ -192,6 +194,15 @@ class Kadb(
         fun tryConnection(host: String, port: Int, keyPair: AdbKeyPair) = runCatching {
             create(host, port, keyPair).takeIf { it.shell("echo success").allOutput == "success\n" }
         }.getOrNull()
+
+        fun tcpForward(host: String, port: Int, targetPort: Int) = Kadb(host, port).tcpForward(port, targetPort)
+    }
+
+    @Throws(InterruptedException::class)
+    fun tcpForward(hostPort: Int, targetPort: Int): AutoCloseable {
+        val forwarder = TcpForwarder(this, hostPort, targetPort)
+        forwarder.start()
+        return forwarder
     }
 
     private fun restartAdb(destination: String): String {
