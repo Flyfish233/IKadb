@@ -10,11 +10,11 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder
 import java.math.BigInteger
 import java.security.*
+import java.security.cert.*
 import java.security.cert.Certificate
-import java.security.cert.CertificateFactory
-import java.security.cert.X509Certificate
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.*
+import kotlin.Throws
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 
@@ -81,8 +81,8 @@ internal fun loadKeyPair(): AdbKeyPair {
     else AdbKeyPair(privateKey, certificate.publicKey, certificate)
 }
 
+@Throws(CertificateExpiredException::class, CertificateNotYetValidException::class)
 internal fun vailidateCertificate() {
-    // If certificate is expired, throw exception
     val x509Certificate = readCertificate() as X509Certificate
     x509Certificate.checkValidity()
 }

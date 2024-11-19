@@ -22,17 +22,17 @@ sealed class AdbShellPacket(
     abstract val id: Int
 
     class StdOut(override val payload: ByteArray) : AdbShellPacket(payload) {
-        override val id: Int = ID_STDOUT
+        override val id: Int = AdbShellPacketV2.ID_STDOUT
         override fun toString() = "STDOUT: ${String(payload)}"
     }
 
     class StdError(override val payload: ByteArray) : AdbShellPacket(payload) {
-        override val id: Int = ID_STDERR
+        override val id: Int = AdbShellPacketV2.ID_STDERR
         override fun toString() = "STDERR: ${String(payload)}"
     }
 
     class Exit(override val payload: ByteArray) : AdbShellPacket(payload) {
-        override val id: Int = ID_EXIT
+        override val id: Int = AdbShellPacketV2.ID_EXIT
         override fun toString() = "EXIT: ${payload[0]}"
     }
 }

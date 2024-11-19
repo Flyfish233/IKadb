@@ -40,12 +40,12 @@ class AdbShellStream(
             val length = checkLength(id, readIntLe())
             val payload = readByteArray(length.toLong())
             return when (id) {
-                ID_STDOUT -> AdbShellPacket.StdOut(payload)
-                ID_STDERR -> AdbShellPacket.StdError(payload)
-                ID_EXIT -> AdbShellPacket.Exit(payload)
-                ID_CLOSE_STDIN -> throw IOException("Todo: ID_CLOSE_STDIN")
-                ID_WINDOW_SIZE_CHANGE -> throw IOException("Todo: ID_WINDOW_SIZE_CHANGE")
-                ID_INVALID -> throw IOException("Todo: ID_INVALID")
+                AdbShellPacketV2.ID_STDOUT -> AdbShellPacket.StdOut(payload)
+                AdbShellPacketV2.ID_STDERR -> AdbShellPacket.StdError(payload)
+                AdbShellPacketV2.ID_EXIT -> AdbShellPacket.Exit(payload)
+                AdbShellPacketV2.ID_CLOSE_STDIN -> throw IOException("Todo: ID_CLOSE_STDIN")
+                AdbShellPacketV2.ID_WINDOW_SIZE_CHANGE -> throw IOException("Todo: ID_WINDOW_SIZE_CHANGE")
+                AdbShellPacketV2.ID_INVALID -> throw IOException("Todo: ID_INVALID")
                 else -> throw IllegalArgumentException("Invalid shell packet id: $id")
             }
         }
@@ -53,7 +53,7 @@ class AdbShellStream(
 
     @Throws(IOException::class)
     fun write(string: String) {
-        write(ID_STDIN, string.toByteArray())
+        write(AdbShellPacketV2.ID_STDIN, string.toByteArray())
     }
 
     @Throws(IOException::class)
@@ -71,7 +71,7 @@ class AdbShellStream(
     }
 
     private fun checkId(id: Int): Int {
-        check(id == ID_STDOUT || id == ID_STDERR || id == ID_EXIT) {
+        check(id == AdbShellPacketV2.ID_STDOUT || id == AdbShellPacketV2.ID_STDERR || id == AdbShellPacketV2.ID_EXIT) {
             "Invalid shell packet id: $id"
         }
         return id
@@ -79,7 +79,7 @@ class AdbShellStream(
 
     private fun checkLength(id: Int, length: Int): Int {
         check(length >= 0) { "Shell packet length must be >= 0: $length" }
-        check(id != ID_EXIT || length == 1) { "Shell exit packet does not have payload length == 1: $length" }
+        check(id != AdbShellPacketV2.ID_EXIT || length == 1) { "Shell exit packet does not have payload length == 1: $length" }
         return length
     }
 }

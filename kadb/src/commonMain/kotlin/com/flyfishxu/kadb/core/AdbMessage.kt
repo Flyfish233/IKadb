@@ -17,7 +17,7 @@
 
 package com.flyfishxu.kadb.core
 
-import com.flyfishxu.kadb.shell.ID_EXIT
+import com.flyfishxu.kadb.shell.AdbShellPacketV2
 import com.flyfishxu.kadb.stream.SYNC_IDS
 import okio.Buffer
 import okio.BufferedSource
@@ -58,7 +58,7 @@ internal class AdbMessage(
         if (id < 0 || id > 3) return null
         val length = source.readIntLe()
         if (length != source.buffer.size.toInt()) return null
-        if (id == ID_EXIT) return "[shell] exit(${source.readByte()})"
+        if (id == AdbShellPacketV2.ID_EXIT) return "[shell] exit(${source.readByte()})"
         val payload = String(payload, 5, payloadLength - 5)
         return "[shell] $payload"
     }
