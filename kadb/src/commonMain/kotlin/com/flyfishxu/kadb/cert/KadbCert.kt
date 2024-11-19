@@ -39,13 +39,11 @@ object KadbCert {
         l: String = "Kadb",
         st: String = "Kadb",
         c: String = "Kadb",
-        notAfter: Time = Time(Date(System.currentTimeMillis() + 10368000000)), // 120 days
+        notAfter: Long = System.currentTimeMillis() + 10368000000, // 120 days
         serialNumber: BigInteger = BigInteger(64, SecureRandom())
     ): Pair<ByteArray, ByteArray> {
         if (cert.isEmpty() || key.isEmpty()) {
-            generate(
-                keySize, cn, ou, o, l, st, c, notAfter, serialNumber
-            )
+            generate(keySize, cn, ou, o, l, st, c, Time(Date(notAfter)), serialNumber)
         }
         return cert to key
     }
@@ -61,12 +59,10 @@ object KadbCert {
         l: String = "Kadb",
         st: String = "Kadb",
         c: String = "Kadb",
-        notAfter: Time = Time(Date(System.currentTimeMillis() + 10368000000)), // 120 days
+        notAfter: Long = System.currentTimeMillis() + 10368000000, // 120 days
         serialNumber: BigInteger = BigInteger(64, SecureRandom())
     ): Pair<ByteArray, ByteArray> {
-        generate(
-            keySize, cn, ou, o, l, st, c, notAfter, serialNumber
-        )
+        generate(keySize, cn, ou, o, l, st, c, Time(Date(notAfter)), serialNumber)
         return cert to key
     }
 }
