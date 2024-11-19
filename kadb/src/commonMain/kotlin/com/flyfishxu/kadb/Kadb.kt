@@ -21,7 +21,7 @@ import java.net.Socket
 class Kadb(
     private val host: String,
     private val port: Int,
-    private val keyPair: AdbKeyPair? = null,
+    private val keyPair: AdbKeyPair = loadKeyPair(),
     private val connectTimeout: Int = 0,
     private val socketTimeout: Int = 0
 ) : AutoCloseable {

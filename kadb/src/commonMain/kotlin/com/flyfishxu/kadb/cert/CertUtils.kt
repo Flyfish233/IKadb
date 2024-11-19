@@ -12,6 +12,7 @@ import java.math.BigInteger
 import java.security.*
 import java.security.cert.Certificate
 import java.security.cert.CertificateFactory
+import java.security.cert.X509Certificate
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.*
 import kotlin.io.encoding.Base64
@@ -75,11 +76,18 @@ private fun parsePCKS8(bytes: ByteArray): PrivateKey {
 internal fun loadKeyPair(): AdbKeyPair {
     val privateKey = readPrivateKey()
     val certificate = readCertificate()
+    // vailidateCertificate() -> Is that redundant?
     return if (privateKey == null || certificate == null) generate()
     else AdbKeyPair(privateKey, certificate.publicKey, certificate)
 }
 
-internal fun generate( // TODO
+internal fun vailidateCertificate() {
+    // If certificate is expired, throw exception
+    val x509Certificate = readCertificate() as X509Certificate
+    x509Certificate.checkValidity()
+}
+
+internal fun generate(
     keySize: Int = 2048,
     cn: String = "Kadb",
     ou: String = "Kadb",

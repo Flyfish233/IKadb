@@ -75,14 +75,14 @@ internal class AdbConnection internal constructor(
     }
 
     companion object {
-        fun connect(socket: Socket, keyPair: AdbKeyPair? = null): AdbConnection {
+        fun connect(socket: Socket, keyPair: AdbKeyPair): AdbConnection {
             val source = socket.source()
             val sink = socket.sink()
             return connect(socket, source, sink, keyPair, socket)
         }
 
         private fun connect(
-            socket: Socket, source: Source, sink: Sink, keyPair: AdbKeyPair? = null, closeable: Closeable? = null
+            socket: Socket, source: Source, sink: Sink, keyPair: AdbKeyPair, closeable: Closeable? = null
         ): AdbConnection {
             val adbReader = AdbReader(source)
             val adbWriter = AdbWriter(sink)
@@ -97,7 +97,7 @@ internal class AdbConnection internal constructor(
         }
 
         private fun connect(
-            socket: Socket, adbReader: AdbReader, adbWriter: AdbWriter, keyPair: AdbKeyPair?, closeable: Closeable?
+            socket: Socket, adbReader: AdbReader, adbWriter: AdbWriter, keyPair: AdbKeyPair, closeable: Closeable?
         ): AdbConnection {
             adbWriter.writeConnect()
 
@@ -122,7 +122,7 @@ internal class AdbConnection internal constructor(
                 adbWriter.close()
                 return connect(sslSocket, keyPair)
             } else if (message.command == AdbProtocol.CMD_AUTH) {
-                checkNotNull(keyPair) { "Authentication required but no KeyPair provided" }
+                // checkNotNull(keyPair) { "Authentication required but no KeyPair provided" }
                 check(message.arg0 == AdbProtocol.AUTH_TYPE_TOKEN) { "Unsupported auth type: $message" }
 
                 val signature = keyPair.signPayload(message)
