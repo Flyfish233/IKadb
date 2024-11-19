@@ -71,7 +71,7 @@ private fun parsePCKS8(bytes: ByteArray): PrivateKey {
     return keyFactory.generatePrivate(keySpec)
 }
 
-/** Public API */
+/** Internal API */
 
 internal fun loadKeyPair(): AdbKeyPair {
     val privateKey = readPrivateKey()

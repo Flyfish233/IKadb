@@ -15,6 +15,24 @@ import java.nio.ByteOrder
 import java.util.*
 import javax.security.auth.Destroyable
 
+// The following values are taken from the following source and are subjected to change
+// https://android.googlesource.com/platform//packages/modules/adb/+/main/pairing_auth/pairing_auth.cpp
+private val CLIENT_NAME: ByteArray
+    get() = getBytes("adb pair client\u0000", "UTF-8")
+private val SERVER_NAME: ByteArray
+    get() = getBytes("adb pair server\u0000", "UTF-8")
+
+// The following values are taken from the following source and are subjected to change
+// https://android.googlesource.com/platform//packages/modules/adb/+/main/pairing_auth/aes_128_gcm.cpp
+internal val INFO: ByteArray
+    get() = getBytes("adb pairing_auth aes-128-gcm key", "UTF-8")
+
+internal val HKDF_KEY_LENGTH: Int  // kHkdfKeyLength = 16;
+    get() = 16
+
+private val GCM_IV_LENGTH: Int  // in bytes
+    get() = 12
+
 internal actual class PairingAuthCtx(
     private val mSpake2Ctx: Spake2Context, password: ByteArray
 ) : Destroyable {

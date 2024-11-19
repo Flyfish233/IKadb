@@ -31,31 +31,12 @@ internal expect class PairingAuthCtx : Destroyable {
     companion object
 }
 
-internal val PairingAuthCtx.Companion.GCM_IV_LENGTH: Int  // in bytes
-    get() = 12
-
-// The following values are taken from the following source and are subjected to change
-// https://github.com/aosp-mirror/platform_system_core/blob/android-11.0.0_r1/adb/pairing_auth/pairing_auth.cpp
-internal val PairingAuthCtx.Companion.CLIENT_NAME: ByteArray
-    get() = getBytes("adb pair client\u0000", "UTF-8")
-internal val PairingAuthCtx.Companion.SERVER_NAME: ByteArray
-    get() = getBytes("adb pair server\u0000", "UTF-8")
-
-// The following values are taken from the following source and are subjected to change
-// https://github.com/aosp-mirror/platform_system_core/blob/android-11.0.0_r1/adb/pairing_auth/aes_128_gcm.cpp
-internal val PairingAuthCtx.Companion.INFO: ByteArray
-    get() = getBytes("adb pairing_auth aes-128-gcm key", "UTF-8")
-
-internal val PairingAuthCtx.Companion.HKDF_KEY_LENGTH: Int
-    get() = 128 / 8
-
-internal expect fun PairingAuthCtx.Companion.createAlice(password: ByteArray): PairingAuthCtx?
-
 internal fun getBytes(text: String, charsetName: String): ByteArray {
     return try {
         text.toByteArray(charset(charsetName))
     } catch (e: UnsupportedEncodingException) {
-        throw (IllegalCharsetNameException("Illegal charset $charsetName")
-            .initCause(e) as IllegalCharsetNameException)
+        throw (IllegalCharsetNameException("Illegal charset $charsetName").initCause(e) as IllegalCharsetNameException)
     }
 }
+
+internal expect fun PairingAuthCtx.Companion.createAlice(password: ByteArray): PairingAuthCtx?

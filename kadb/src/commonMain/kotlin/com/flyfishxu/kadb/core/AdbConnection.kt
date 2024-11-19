@@ -4,6 +4,7 @@ import com.flyfishxu.kadb.cert.AdbKeyPair
 import com.flyfishxu.kadb.cert.loadKeyPair
 import com.flyfishxu.kadb.cert.platform.defaultDeviceName
 import com.flyfishxu.kadb.exception.AdbPairAuthException
+import com.flyfishxu.kadb.pair.SslUtils
 import com.flyfishxu.kadb.queue.AdbMessageQueue
 import com.flyfishxu.kadb.stream.AdbStream
 import okio.Sink
@@ -122,7 +123,6 @@ internal class AdbConnection internal constructor(
                 adbWriter.close()
                 return connect(sslSocket, keyPair)
             } else if (message.command == AdbProtocol.CMD_AUTH) {
-                // checkNotNull(keyPair) { "Authentication required but no KeyPair provided" }
                 check(message.arg0 == AdbProtocol.AUTH_TYPE_TOKEN) { "Unsupported auth type: $message" }
 
                 val signature = keyPair.signPayload(message)

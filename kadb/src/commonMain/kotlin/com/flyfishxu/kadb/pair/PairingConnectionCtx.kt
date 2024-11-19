@@ -18,7 +18,6 @@ package com.flyfishxu.kadb.pair
 
 import com.flyfishxu.kadb.cert.AdbKeyPair
 import com.flyfishxu.kadb.cert.AndroidPubkey.encodeWithName
-import com.flyfishxu.kadb.core.SslUtils.getSslContext
 import java.io.Closeable
 import java.io.DataInputStream
 import java.io.DataOutputStream
@@ -47,7 +46,7 @@ internal class PairingConnectionCtx(
             (keyPair.certificate.publicKey as RSAPublicKey), Objects.requireNonNull(deviceName)
         )
     )
-    private val mSslContext: SSLContext = getSslContext(keyPair)
+    private val mSslContext: SSLContext = SslUtils.getSslContext(keyPair)
     private val mRole = Role.Client
     private var mInputStream: DataInputStream? = null
     private var mOutputStream: DataOutputStream? = null

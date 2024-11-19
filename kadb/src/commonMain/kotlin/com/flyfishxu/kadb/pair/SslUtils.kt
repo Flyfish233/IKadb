@@ -14,9 +14,10 @@
  *
  */
 
-package com.flyfishxu.kadb.core
+package com.flyfishxu.kadb.pair
 
 import com.flyfishxu.kadb.cert.AdbKeyPair
+import com.flyfishxu.kadb.core.AdbProtocol
 import okio.BufferedSink
 import okio.buffer
 import okio.sink
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.*
 
 internal object SslUtils {
-    var customConscrypt = false // TODO: WTF is this?
+    var customConscrypt = false
     private var sslContext: SSLContext? = null
 
     fun getSSLSocket(
