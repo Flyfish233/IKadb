@@ -1,7 +1,7 @@
 package com.flyfishxu.kadb.core
 
 import com.flyfishxu.kadb.cert.AdbKeyPair
-import com.flyfishxu.kadb.cert.loadKeyPair
+import com.flyfishxu.kadb.cert.CertUtils.loadKeyPair
 import com.flyfishxu.kadb.cert.platform.defaultDeviceName
 import com.flyfishxu.kadb.exception.AdbPairAuthException
 import com.flyfishxu.kadb.pair.SslUtils

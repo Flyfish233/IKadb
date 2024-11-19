@@ -1,7 +1,6 @@
 package com.flyfishxu.kadb
 
-import com.flyfishxu.kadb.cert.AdbKeyPair
-import com.flyfishxu.kadb.cert.loadKeyPair
+import com.flyfishxu.kadb.cert.CertUtils.loadKeyPair
 import com.flyfishxu.kadb.cert.platform.defaultDeviceName
 import com.flyfishxu.kadb.core.AdbConnection
 import com.flyfishxu.kadb.forwarding.TcpForwarder
@@ -23,7 +22,6 @@ import kotlin.Throws
 class Kadb(
     private val host: String,
     private val port: Int,
-    private val keyPair: AdbKeyPair = loadKeyPair(),
     private val connectTimeout: Int = 0,
     private val socketTimeout: Int = 0
 ) : AutoCloseable {
@@ -151,12 +149,12 @@ class Kadb(
                     keepAlive = true
                     connect(socketAddress, connectTimeout)
                 }
-                val adbConnection = AdbConnection.connect(socket, keyPair)
+                val adbConnection = AdbConnection.connect(socket, loadKeyPair())
                 return adbConnection to socket
             } catch (e: Exception) {
                 println("CONNECT LOST; TRYING TO REBUILD SOCKET $attempt TIMES")
                 if (attempt >= 5) throw e
-                Thread.sleep(1000)
+                Thread.sleep(300)
             }
         }
     }
@@ -186,13 +184,12 @@ class Kadb(
         fun create(
             host: String,
             port: Int,
-            keyPair: AdbKeyPair = loadKeyPair(),
             connectTimeout: Int = 0,
             socketTimeout: Int = 0
-        ): Kadb = Kadb(host, port, keyPair, connectTimeout, socketTimeout)
+        ): Kadb = Kadb(host, port, connectTimeout, socketTimeout)
 
-        fun tryConnection(host: String, port: Int, keyPair: AdbKeyPair) = runCatching {
-            create(host, port, keyPair).takeIf { it.shell("echo success").allOutput == "success\n" }
+        fun tryConnection(host: String, port: Int) = runCatching {
+            create(host, port).takeIf { it.shell("echo success").allOutput == "success\n" }
         }.getOrNull()
 
         fun tcpForward(host: String, port: Int, targetPort: Int) = Kadb(host, port).tcpForward(port, targetPort)

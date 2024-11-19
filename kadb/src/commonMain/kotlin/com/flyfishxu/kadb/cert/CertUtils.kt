@@ -71,56 +71,56 @@ private fun parsePCKS8(bytes: ByteArray): PrivateKey {
     return keyFactory.generatePrivate(keySpec)
 }
 
-/** Internal API */
+internal object CertUtils {
+    fun loadKeyPair(): AdbKeyPair {
+        val privateKey = readPrivateKey()
+        val certificate = readCertificate()
+        // vailidateCertificate() -> Is that redundant?
+        return if (privateKey == null || certificate == null) generate()
+        else AdbKeyPair(privateKey, certificate.publicKey, certificate)
+    }
 
-internal fun loadKeyPair(): AdbKeyPair {
-    val privateKey = readPrivateKey()
-    val certificate = readCertificate()
-    // vailidateCertificate() -> Is that redundant?
-    return if (privateKey == null || certificate == null) generate()
-    else AdbKeyPair(privateKey, certificate.publicKey, certificate)
-}
+    @Throws(CertificateExpiredException::class, CertificateNotYetValidException::class)
+    fun vailidateCertificate() {
+        val x509Certificate = readCertificate() as X509Certificate
+        x509Certificate.checkValidity()
+    }
 
-@Throws(CertificateExpiredException::class, CertificateNotYetValidException::class)
-internal fun vailidateCertificate() {
-    val x509Certificate = readCertificate() as X509Certificate
-    x509Certificate.checkValidity()
-}
+    fun generate(
+        keySize: Int = 2048,
+        cn: String = "Kadb",
+        ou: String = "Kadb",
+        o: String = "Kadb",
+        l: String = "Kadb",
+        st: String = "Kadb",
+        c: String = "Kadb",
+        notAfter: Time = Time(Date(System.currentTimeMillis() + 10368000000)), // 120 days
+        serialNumber: BigInteger = BigInteger(64, SecureRandom())
+    ): AdbKeyPair {
+        Security.addProvider(BouncyCastleProvider())
 
-internal fun generate(
-    keySize: Int = 2048,
-    cn: String = "Kadb",
-    ou: String = "Kadb",
-    o: String = "Kadb",
-    l: String = "Kadb",
-    st: String = "Kadb",
-    c: String = "Kadb",
-    notAfter: Time = Time(Date(System.currentTimeMillis() + 10368000000)), // 120 days
-    serialNumber: BigInteger = BigInteger(64, SecureRandom())
-): AdbKeyPair {
-    Security.addProvider(BouncyCastleProvider())
+        val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
+        keyPairGenerator.initialize(keySize, SecureRandom.getInstance("SHA1PRNG"))
+        val generateKeyPair = keyPairGenerator.generateKeyPair()
+        val publicKey = generateKeyPair.public
+        val privateKey = generateKeyPair.private
 
-    val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
-    keyPairGenerator.initialize(keySize, SecureRandom.getInstance("SHA1PRNG"))
-    val generateKeyPair = keyPairGenerator.generateKeyPair()
-    val publicKey = generateKeyPair.public
-    val privateKey = generateKeyPair.private
+        val notBefore = Time(Date(System.currentTimeMillis()))
+        val subject = "CN=$cn, OU=$ou, O=$o, L=$l, ST=$st, C=$c"
 
-    val notBefore = Time(Date(System.currentTimeMillis()))
-    val subject = "CN=$cn, OU=$ou, O=$o, L=$l, ST=$st, C=$c"
+        val x500Name = X500Name(subject)
+        val x509v3CertificateBuilder: X509v3CertificateBuilder = JcaX509v3CertificateBuilder(
+            x500Name, serialNumber, notBefore, notAfter, x500Name, publicKey
+        )
 
-    val x500Name = X500Name(subject)
-    val x509v3CertificateBuilder: X509v3CertificateBuilder = JcaX509v3CertificateBuilder(
-        x500Name, serialNumber, notBefore, notAfter, x500Name, publicKey
-    )
+        val contentSigner = JcaContentSignerBuilder("SHA512withRSA").build(privateKey)
+        val certificateHolder = x509v3CertificateBuilder.build(contentSigner)
+        val certificate =
+            JcaX509CertificateConverter().setProvider(BouncyCastleProvider()).getCertificate(certificateHolder)
 
-    val contentSigner = JcaContentSignerBuilder("SHA512withRSA").build(privateKey)
-    val certificateHolder = x509v3CertificateBuilder.build(contentSigner)
-    val certificate =
-        JcaX509CertificateConverter().setProvider(BouncyCastleProvider()).getCertificate(certificateHolder)
+        KadbCert.key = writePrivateKey(privateKey)
+        KadbCert.cert = writeCertificate(certificate)
 
-    KadbCert.key = writePrivateKey(privateKey)
-    KadbCert.cert = writeCertificate(certificate)
-
-    return AdbKeyPair(privateKey, publicKey, certificate)
+        return AdbKeyPair(privateKey, publicKey, certificate)
+    }
 }
